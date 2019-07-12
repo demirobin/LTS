@@ -1,24 +1,39 @@
 public class Lts {
     public static int indexl(char[] s) {  
 	  int n = s.length;
-      int a,c,k,l,t=0;
+      int a,c,k,l,t,max,min=0;
       int[] A = new int[n];
       int[][] Dk= new int[n][n];
       int[][] Fk= new int[n][n];
-      for(k=1;k<=n;k++) {
+      //the original
+       for(k=1;k<=n;k++) {
     	  for(a=k-1; a>=1; a--) {
     		  if(s[a-1]==s[k-1]) {
     			  t=A[a-1];
     			  c=a+1;
     			  while(t<k && c<k) {
-    				  A[c-1]= Math.min(A[c-1],t);
-    				  t= Math.max(A[c-1],t);
-    				  c=c+1;
+                   max=Math.max(A[c-1],t );
+                   min=Math.min(A[c-1],t );
+                   A[c-1]=min;
+                   t=max;
+    			   c++;
     			  }
     			  A[a-1]=k;
     		  }
     	  }
       }
+      c=0;
+	  l=1;
+	  for(k=1;k<n;k++) {
+		  t=0;
+		  for(a=1;a<=k;a++) {
+			  if(A[a-1]>k) t++;}
+			  if(t>c) {
+				  c=t;
+				  l=k;
+			  }
+		  }
+	  
       for(int q=0;q<n;q++) {
     	  System.out.println(A[q]);
       }
@@ -56,24 +71,12 @@ public class Lts {
     	  }
     	  System.out.println();
       }
-      return 0;
+      return l;
     }
-    	  /*c=0;
-    	  l=1;
-    	  for(k=1;k<n;k++) {
-    		  t=0;
-    		  for(a=1;a<=k;a++) {
-    			  if(A[a-1]>k) t++;
-    		  }
-    			  if(t>c) {
-    				  c=t;
-    				  l=k;
-    			  }
-    		  }
-    	  return l;
-    	  }*/
+    	 
     public static void main(String[] args) {
     	char[] s = {'A','B','C','B','B','C','A','B','A','B','A','C'};
     	indexl(s);
+    	System.out.println(indexl(s));
     }
 }
