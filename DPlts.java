@@ -1,5 +1,7 @@
 package longestTS;
 
+import java.util.Scanner;
+
 import longestTS.DPpoint;
 
 public class DPlts {
@@ -129,16 +131,16 @@ public class DPlts {
 		}
 		char[] half=new char[l];
 		for(int i=0;i<ilength;i++) {
-			int j=0;
+			for(int j=0;j<i;j++) {
 				if(table[i][j].getLength()==l) {
 					p=table[i][j].getPx();
 					coi=table[i][j].geti();
 					half[0]=input[i];
 					break;
-				}else {
-					j++;
 				}
 			}
+			if(half[0]==input[i]) break;
+		}
 		int subtract=l-1;
 		
 		for(int i=coi;i<ilength;i++) {
@@ -154,15 +156,34 @@ public class DPlts {
 		return half;
 	}
 	
+	public static char[] concatenate(char[] max) {
+		int length=max.length;
+		int j=0;
+		char[] con=new char[2*length];
+		for(int i=0;i<length;i++) {
+			con[i]=max[i];
+		}
+		for(int i=length;i<2*length;i++) {
+			con[i]=max[j];
+			j++;
+		}
+		return con;
+	}
+	
 	public static void main(String[] args) {
-		String input="ABCBBCABABAC";
-		char[] enter= input.toCharArray();
+		Scanner enter = new Scanner(System.in);
+    	System.out.println("Please enter a character sequence: ");
+    	String input=enter.nextLine();
+    	char[] user=input.toCharArray();
 		System.out.println(alphabet(input));
-		int[][] fi=phi(alphabet(input),enter);
-		DPpoint[][] DP= DPtable(enter);
+		int[][] fi=phi(alphabet(input),user);
+		DPpoint[][] DP= DPtable(user);
 		printDPtable(DP);
 		DPpoint[][] fDP= DPplus(DP,fi);
 		printDPtable(fDP);
-		System.out.println(proberMax(fDP,enter));
+		System.out.print("LTS:"+"\t");
+		char[] max= proberMax(fDP,user);
+		System.out.println(concatenate(max));
+		enter.close();
 	}
 }
