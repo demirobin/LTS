@@ -169,21 +169,41 @@ public class DPlts {
 		}
 		return con;
 	}
+	public static String compare(char[] a, char[] lts) {
+		char[] org=a;
+		int k=0;
+		int length=a.length;
+		String match="";
+		int count=lts.length;
+		for(int i=0;i<count;i++) {
+			for(int j=k;j<length;j++) {
+				if(org[j]==lts[i]) {
+					match+=org[j];
+					k=j+1;
+					break;
+				}else {
+					match+=" ";
+				}
+				}
+			}
+		return match;
+		}
 	
 	public static void main(String[] args) {
 		Scanner enter = new Scanner(System.in);
-    	System.out.println("Please enter a character sequence: ");
+    	System.out.println("Please enter a character sequence:");
     	String input=enter.nextLine();
     	char[] user=input.toCharArray();
-		System.out.println(alphabet(input));
+		//System.out.println(alphabet(input));
 		int[][] fi=phi(alphabet(input),user);
 		DPpoint[][] DP= DPtable(user);
-		printDPtable(DP);
+		//printDPtable(DP);
 		DPpoint[][] fDP= DPplus(DP,fi);
-		printDPtable(fDP);
-		System.out.print("LTS:"+"\t");
+		//printDPtable(fDP);
+		System.out.println("LTS of the sequence is:");
 		char[] max= proberMax(fDP,user);
-		System.out.println(concatenate(max));
+		String fin= compare(user,concatenate(max));
+		System.out.println(fin);
 		enter.close();
 	}
 }
