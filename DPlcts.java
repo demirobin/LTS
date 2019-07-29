@@ -142,9 +142,8 @@ public class DPlcts {
 		}
 		return half;
 	}
-	
 	public static void main(String[] args) {
-		Scanner enter = new Scanner(System.in);
+	Scanner enter = new Scanner(System.in);
     	System.out.println("Please enter the first character sequence: ");
     	String input1=enter.nextLine();
     	System.out.println("Please enter the second character sequence: ");
@@ -152,16 +151,18 @@ public class DPlcts {
 		char[] enter1=input1.toCharArray();
 		char[] enter2=input2.toCharArray();
 		char[] sigma=comalphabet(input1,input2);
-		System.out.println(sigma);
+		//System.out.println(sigma);
 		int[][] fi1=DPlts.phi(sigma, input1.toCharArray());
 		int[][] fi2=DPlts.phi(sigma,input2.toCharArray());
-		DPlts.print2D(fi1);
-		System.out.println();
-		DPlts.print2D(fi2);
+		//DPlts.print2D(fi1);
+		//System.out.println();
+		//DPlts.print2D(fi2);
 		DPpoint2[][][][] table4D = DP4D(enter1,enter2);
-		char[] max=proberMax(table4D, enter1);
-		System.out.print("Common LTS:"+"\t");
-		System.out.println(DPlts.concatenate(max));
+		DPpoint2[][][][] tableUp = DP2plus(table4D, fi1, fi2);
+		char[] max=proberMax(tableUp, enter1);
+		System.out.println("Common LTS:");
+		char[] lcts=DPlts.concatenate(max);
+		System.out.println(Lts.comparison(enter1, enter2, lcts));
 		enter.close();
 	}
 }
