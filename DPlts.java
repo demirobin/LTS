@@ -1,7 +1,6 @@
 package longestTS;
 
 import java.util.Scanner;
-
 import longestTS.DPpoint;
 
 public class DPlts {
@@ -129,6 +128,7 @@ public class DPlts {
 				l=Math.max(l, count);
 			}
 		}
+		if(l==0)return null;
 		char[] half=new char[l];
 		for(int i=0;i<ilength;i++) {
 			for(int j=0;j<i;j++) {
@@ -169,6 +169,7 @@ public class DPlts {
 		}
 		return con;
 	}
+	
 	public static String compare(char[] a, char[] lts) {
 		char[] org=a;
 		int k=0;
@@ -194,16 +195,20 @@ public class DPlts {
     	System.out.println("Please enter a character sequence:");
     	String input=enter.nextLine();
     	char[] user=input.toCharArray();
-		//System.out.println(alphabet(input));
+		System.out.println(alphabet(input));
 		int[][] fi=phi(alphabet(input),user);
 		DPpoint[][] DP= DPtable(user);
 		//printDPtable(DP);
 		DPpoint[][] fDP= DPplus(DP,fi);
-		//printDPtable(fDP);
+		printDPtable(fDP);
 		System.out.println("LTS of the sequence is:");
 		char[] max= proberMax(fDP,user);
+		if(max!=null) {
 		String fin= compare(user,concatenate(max));
 		System.out.println(fin);
+		}else {
+			System.out.println("Non-existent");
+		}
 		enter.close();
 	}
 }
