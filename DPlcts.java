@@ -1,6 +1,8 @@
 package longestTS;
 
 import java.util.Scanner;
+import java.io.*;
+import longestTS.MyStringRandomGen;
 
 import longestTS.DPpoint2;
 
@@ -26,7 +28,8 @@ public class DPlcts {
 					for(int j2=0;j2<=i2;j2++) {
 				DPtable[i1][j1][i2][j2]=new DPpoint2(i1+1,j1+1,i2+1,j2+1);
 				if(input2[j2]==input2[i2] && input2[j2]==input1[j1] && input2[j2]==input1[i1] && j2<i2 && j1<i1) {
-					DPtable[i1][j1][i2][j2].initialize(j1,j2);
+					//updated initialize
+					DPtable[i1][j1][i2][j2].initialize(j1+1,j2+1);
 				}else {
 					DPtable[i1][j1][i2][j2].setlpq(0,0,0);
 				}
@@ -49,7 +52,7 @@ public class DPlcts {
 			for(int j1=i1; j1>=0; j1--) {
 				for(int i2=ylength-1; i2>=0; i2--) {
 					for(int j2=i2; j2>=0; j2--) {
-				if(plus[i1][j1][i2][j2].getLength()!=0) {
+				if(plus[i1][j1][i2][j2].getLength()>0) {
 			    l=plus[i1][j1][i2][j2].getLength();
 			    p=plus[i1][j1][i2][j2].getPx();
 			    q=plus[i1][j1][i2][j2].getQx();
@@ -81,7 +84,7 @@ public class DPlcts {
 	}
 	
 	public static char[] proberMax(DPpoint2[][][][] table, char[] input) {
-		int ilength= table.length;
+		int ilength= input.length;
 		int count=0;
 		int l=0;
 		int p=0;
@@ -89,9 +92,9 @@ public class DPlcts {
 		int add=1;
 		int coi=0;
 		for(int i1=0;i1<ilength;i1++) {
-			for(int j1=0;j1<=i1;j1++) {
+			for(int j1=0;j1<i1;j1++) {
 				for(int i2=0;i2<ilength; i2++) {
-					for(int j2=0; j2<=i2; j2++) {
+					for(int j2=0; j2<i2; j2++) {
 				count=table[i1][j1][i2][j2].getLength();
 				l=Math.max(l, count);
 					}
@@ -99,12 +102,14 @@ public class DPlcts {
 			}
 		}
 		
+		if(l==0)return null;
+		
 		char[] half=new char[l];
 		for(int i1=0;i1<ilength;i1++) {
-			for(int j1=0;j1<=i1;j1++) {
+			for(int j1=0;j1<i1;j1++) {
 				for(int i2=0;i2<ilength;i2++) {
-					for(int j2=0; j2<=i2;j2++) {
-				if(j2<i2 && table[i1][j1][i2][j2].getLength()==l) {
+					for(int j2=0; j2<i2;j2++) {
+				if(table[i1][j1][i2][j2].getLength()==l) {
 					p=table[i1][j1][i2][j2].getPx();
 					q=table[i1][j1][i2][j2].getQx();
 					coi=i1+1;               
@@ -142,12 +147,33 @@ public class DPlcts {
 		}
 		return half;
 	}
-	public static void main(String[] args) {
-	Scanner enter = new Scanner(System.in);
+	
+	
+	public static void main(String[] args) throws FileNotFoundException{
+		/* To input a text file, use the following code:
+		Scanner inFile = new Scanner(new FileReader("C:\\Users\\Robin Alice X\\Documents\\dna.txt"));
+		String input1=inFile.nextLine().replaceAll(" ", "");
+    	System.out.println("The first character sequence is \n"+input1);
+		String input2=inFile.nextLine().replaceAll(" ", "");
+    	System.out.println("The second character sequence is \n"+input2);
+    	*/
+		/* To input two strings as an user, use the following code:
+		Scanner enter = new Scanner(System.in);
     	System.out.println("Please enter the first character sequence: ");
-    	String input1=enter.nextLine();
+		String input1=enter.nextLine();
     	System.out.println("Please enter the second character sequence: ");
     	String input2=enter.nextLine();
+    	*/
+		//To generate two random strings, use the following code:
+		MyStringRandomGen msr = new MyStringRandomGen();
+		Scanner enter = new Scanner(System.in);
+		System.out.println("Please enter the length of the two sequences you want to generate: ");
+		int inputl=enter.nextInt();
+		String input1=msr.generateRandomString(inputl);
+		String input2=msr.generateRandomString(inputl);
+		System.out.println("The first character sequence is \n"+input1);
+		System.out.println("The second character sequence is \n"+input2);
+		//
 		char[] enter1=input1.toCharArray();
 		char[] enter2=input2.toCharArray();
 		char[] sigma=comalphabet(input1,input2);
@@ -161,8 +187,12 @@ public class DPlcts {
 		DPpoint2[][][][] tableUp = DP2plus(table4D, fi1, fi2);
 		char[] max=proberMax(tableUp, enter1);
 		System.out.println("Common LTS:");
+		if(max!=null) {
 		char[] lcts=DPlts.concatenate(max);
 		System.out.println(Lts.comparison(enter1, enter2, lcts));
+		}else {
+			System.out.println("Non-existent");
+		}
 		enter.close();
 	}
 }
