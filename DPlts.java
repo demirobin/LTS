@@ -1,7 +1,6 @@
 package longestTS;
 
 import java.util.Scanner;
-import longestTS.DPpoint;
 
 public class DPlts {
 
@@ -90,7 +89,7 @@ public class DPlts {
 		int l=1;
 		int p=0;
 		int t=0;
-		for(int i=ylength-1; i>=0; i--) {
+		for(int i=ylength-2; i>0; i--) {
 			for(int j=i; j>=0; j--) {
 				if(plus[i][j].getLength()!=0) {
 			    l=plus[i][j].getLength();
@@ -102,7 +101,8 @@ public class DPlts {
 						if((t+1)>l) {
 						l= t+1;
 						p= plus[fi[x][i]-1][fi[x][j]-1].getPx();
-						}else if((t+1)==l) {
+						}
+						if((t+1)==l) {
 							p= Math.min(p, plus[fi[x][i]-1][fi[x][j]-1].getPx());
 						}
 						}
@@ -122,6 +122,7 @@ public class DPlts {
 		int p=0;
 		int add=1;
 		int coi=0;
+		int coj=0;
 		for(int i=0;i<ilength;i++) {
 			for(int j=0;j<i;j++) {
 				count=table[i][j].getLength();
@@ -135,6 +136,7 @@ public class DPlts {
 				if(table[i][j].getLength()==l) {
 					p=table[i][j].getPx();
 					coi=table[i][j].geti();
+					coj=table[i][j].getj();
 					half[0]=input[i];
 					break;
 				}
@@ -144,7 +146,7 @@ public class DPlts {
 		int subtract=l-1;
 		
 		for(int i=coi;i<ilength;i++) {
-			for(int j=0;j<i;j++) {
+			for(int j=coj;j<i;j++) {
 				if(add<l && subtract>0 && table[i][j].getPx()==p && table[i][j].getLength()==subtract) {
 					half[add]=input[i];
 					add++;
@@ -157,7 +159,10 @@ public class DPlts {
 	}
 	
 	public static char[] concatenate(char[] max) {
-		int length=max.length;
+		String in=new String(max);
+		String cp=in+in;
+		char[] con=cp.toCharArray();
+		/*int length=max.length;
 		int j=0;
 		char[] con=new char[2*length];
 		for(int i=0;i<length;i++) {
@@ -166,41 +171,50 @@ public class DPlts {
 		for(int i=length;i<2*length;i++) {
 			con[i]=max[j];
 			j++;
-		}
+		}*/
 		return con;
 	}
 	
 	public static String compare(char[] a, char[] lts) {
-		char[] org=a;
 		int k=0;
+		int d=0;
 		int length=a.length;
-		String match="";
 		int count=lts.length;
-		for(int i=0;i<count;i++) {
-			for(int j=k;j<length;j++) {
-				if(org[j]==lts[i]) {
-					match+=org[j];
+		char[] trans=new char[length];
+		for(int m=0;m<length;m++) {
+			trans[m]='0';
+		}
+		for(int j=k;j<count;j++) {
+			for(int i=d;j<length;i++) {
+				if(a[i]==lts[j]) {
+					trans[i]=lts[j];
 					k=j+1;
+					d=i+1;
 					break;
-				}else {
-					match+=" ";
-				}
 				}
 			}
-		return match;
+		}
+		String match=new String(trans);
+		String trim=match.replaceAll("0", "-");
+		return trim;
 		}
 	
 	public static void main(String[] args) {
 		Scanner enter = new Scanner(System.in);
-    	System.out.println("Please enter a character sequence:");
+		System.out.println("Options:\na. to input a sequence as an user;\n"+
+		"b. to generate a random sequence and find its lts;");
+		System.out.println("Please enter \"a\" or \"b\":");
+		String s=enter.nextLine();
+		if(s.equalsIgnoreCase("a")) {
+		//To input a character string:
+		System.out.println("Please enter a character sequence:");
     	String input=enter.nextLine();
     	char[] user=input.toCharArray();
-		System.out.println(alphabet(input));
-		int[][] fi=phi(alphabet(input),user);
-		DPpoint[][] DP= DPtable(user);
+    	int[][] fi=phi(alphabet(input),user);
+    	DPpoint[][] DP= DPtable(user);
 		//printDPtable(DP);
 		DPpoint[][] fDP= DPplus(DP,fi);
-		printDPtable(fDP);
+		//printDPtable(fDP);
 		System.out.println("LTS of the sequence is:");
 		char[] max= proberMax(fDP,user);
 		if(max!=null) {
@@ -208,6 +222,30 @@ public class DPlts {
 		System.out.println(fin);
 		}else {
 			System.out.println("Non-existent");
+		}
+		}else if(s.equalsIgnoreCase("b")) {
+    	//To input the length of a random sequence:
+    	System.out.println("Please enter the length of the character sequence: ");
+    	int len=enter.nextInt();
+    	
+    	MyStringRandomGen msr = new MyStringRandomGen();
+    	char[] user=msr.generateRandomString(len).toCharArray();
+    	System.out.println("The character sequence is: ");
+    	System.out.println(user);
+		//System.out.println(alphabet(input));
+		int[][] fi=phi(alphabet(msr.generateRandomString(len)),user);
+		DPpoint[][] DP= DPtable(user);
+		//printDPtable(DP);
+		DPpoint[][] fDP= DPplus(DP,fi);
+		//printDPtable(fDP);
+		System.out.println("LTS of the sequence is:");
+		char[] max= proberMax(fDP,user);
+		if(max!=null) {
+		String fin= compare(user,concatenate(max));
+		System.out.println(fin);
+		}else {
+			System.out.println("Non-existent");
+		}
 		}
 		enter.close();
 	}
